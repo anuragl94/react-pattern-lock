@@ -7,15 +7,6 @@
     "start": "node server.js"
   },
   "repository": "https://github.com/anuragl94/react-pattern-lock.git",
-  "keywords": [
-    "react",
-    "reactjs",
-    "boilerplate",
-    "reload",
-    "live",
-    "edit",
-    "webpack"
-  ],
   "author": "Anurag Lingam <anuten8@gmail.com>",
   "license": "MIT",
   "bugs": {
@@ -40,7 +31,9 @@
   "dependencies": {
     "babel-loader": "^7.0.0",
     "react": "^15.5.4",
-    "react-dom": "^15.5.4"
+    "react-dom": "^15.5.4",
+    "redux": "^3.7.2",
+    "react-redux": "^5.0.5"
   },
   "main": "server.js"
 }
