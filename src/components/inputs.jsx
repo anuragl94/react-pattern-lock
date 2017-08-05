@@ -19,6 +19,7 @@ class PatternInput extends Component {
       mousedown: false,
       done: false
     }
+    this.valueToCoords = this.valueToCoords.bind(this)
   }
   addToPattern (value) {
     this.setState(function (prevState) {
@@ -28,16 +29,14 @@ class PatternInput extends Component {
         // between the last and latest input & add them to the pattern as well
         if (this.state.value.length) {
           let lastVal = this.state.value.slice(-1)[0]
-          let x1 = lastVal % this.props.rows
-          let y1 = parseInt(lastVal / this.props.rows)
-          let x2 = value % this.props.rows
-          let y2 = parseInt(value / this.props.rows)
-          let xdir = Math.sign(x2 - x1)
-          let ydir = Math.sign(y2 - y1)
-          let iterations = Math.max(Math.abs(x2 - x1), Math.abs(y2 - y1))
-          if (!xdir || !ydir || Math.abs(x2 - x1) === Math.abs(y2 - y1)) {
+          let coords1 = this.valueToCoords(lastVal)
+          let coords2 = this.valueToCoords(value)
+          let xdir = Math.sign(coords2.x - coords1.x)
+          let ydir = Math.sign(coords2.y - coords1.y)
+          let iterations = Math.max(Math.abs(coords2.x - coords1.x), Math.abs(coords2.y - coords1.y))
+          if (!xdir || !ydir || Math.abs(coords2.x - coords1.x) === Math.abs(coords2.y - coords1.y)) {
             for (let i = 1; i < iterations; i++) {
-              let intermediateValue = (i * xdir + x1) + (i * ydir + y1) * this.props.rows
+              let intermediateValue = (i * xdir + coords1.x) + (i * ydir + coords1.y) * this.props.rows
               newState.value.push(intermediateValue)
             }
           }
@@ -46,6 +45,12 @@ class PatternInput extends Component {
       }
       return newState
     })
+  }
+  valueToCoords (value) {
+    return {
+      x: value % this.props.rows,
+      y: parseInt(value / this.props.rows)
+    }
   }
   clearPattern () {
     this.setState({
