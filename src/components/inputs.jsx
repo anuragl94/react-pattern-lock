@@ -12,8 +12,9 @@ const ButtonInput = function (props) {
 }
 
 class PatternInput extends Component {
-  constructor (props) {
+  constructor (props, {store}) {
     super(props)
+    console.info(arguments)
     this.state = {
       value: [],
       mousedown: false,
@@ -112,4 +113,4 @@ class PatternInput extends Component {
   }
 }
 
-export {PatternInput}
+export default PatternInput
