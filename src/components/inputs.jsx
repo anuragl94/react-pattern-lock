@@ -24,12 +24,30 @@ class PatternInput extends Component {
     this.setState(function (prevState) {
       let newState = Object.assign({}, prevState)
       if (newState.value.indexOf(value) === -1) {
+        // First figure out whether any other dots fall exactly on the line
+        // between the last and latest input & add them to the pattern as well
+        if (this.state.value.length) {
+          let lastVal = this.state.value.slice(-1)[0]
+          let x1 = lastVal % this.props.rows
+          let y1 = parseInt(lastVal / this.props.rows)
+          let x2 = value % this.props.rows
+          let y2 = parseInt(value / this.props.rows)
+          let xdir = Math.sign(x2 - x1)
+          let ydir = Math.sign(y2 - y1)
+          let iterations = Math.max(Math.abs(x2 - x1), Math.abs(y2 - y1))
+          if (!xdir || !ydir || Math.abs(x2 - x1) === Math.abs(y2 - y1)) {
+            for (let i = 1; i < iterations; i++) {
+              let intermediateValue = (i * xdir + x1) + (i * ydir + y1) * this.props.rows
+              newState.value.push(intermediateValue)
+            }
+          }
+        }
         newState.value.push(value)
       }
       return newState
     })
   }
-  clearPatern () {
+  clearPattern () {
     this.setState({
       value: []
     })
@@ -65,7 +83,7 @@ class PatternInput extends Component {
             <div key={row}>
               {
                 Array(columns).fill(0).map((_, col) => {
-                  let value = (row * columns) + col + 1
+                  let value = (row * columns) + col
                   let selected = this.state.value.indexOf(value) > -1
                   return (<ButtonInput key={col} active={selected} events={{
                     mouseover: (e) => {
