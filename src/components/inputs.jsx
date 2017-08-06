@@ -16,10 +16,10 @@ class PatternInput extends Component {
     super(props)
     this.state = {
       value: [],
-      mousedown: false,
-      done: false
+      mousedown: false
     }
     this.valueToCoords = this.valueToCoords.bind(this)
+    this.mouseUpEventHandler = this.mouseUpEventHandler.bind(this)
   }
   addToPattern (value) {
     this.setState(function (prevState) {
@@ -57,23 +57,21 @@ class PatternInput extends Component {
       value: []
     })
   }
+  mouseUpEventHandler (e) {
+    let stateUpdates = {
+      mousedown: false
+    }
+    if (this.state.value.length >= 1) {
+      this.props.events.change(this.state.value)
+    }
+    stateUpdates.value = []
+    this.setState(stateUpdates)
+  }
   componentDidMount () {
-    let _this = this
-    document.addEventListener('mouseup', function (e) {
-      let stateUpdates = {
-        mousedown: false
-      }
-      if (_this.state.value.length >= 4) {
-        stateUpdates.done = true
-        _this.props.events.change(_this.state.value)
-      } else {
-        stateUpdates.value = []
-      }
-      _this.setState(stateUpdates)
-    })
+    document.addEventListener('mouseup', this.mouseUpEventHandler)
   }
   componentWillUnmount () {
-    document.removeEventListener('mouseup')
+    document.removeEventListener('mouseup', this.mouseUpEventHandler)
   }
   render () {
     let columns = Number(this.props.columns) || 3
