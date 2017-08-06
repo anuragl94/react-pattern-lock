@@ -1,0 +1,32 @@
+body {
+  user-select: none;
+}
+
+.pattern-button {
+  display: inline-block;
+  margin: 12px;
+  cursor: pointer;
+  border: 8px solid white;
+  background-color: black;
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  position: relative;
+  transition: border-color 0.3s ease-in-out;
+}
+
+.pattern-button::after {
+  position: absolute;
+  display: inline-block;
+  content: '';
+  padding: 12px;
+  transform: translate(-50%, -50%);
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  left: 50%;
+  top: 50%;
+  border-radius: 50%;
+}
+
+.pattern-button.active::after {
+  border-color: #20c05c;
+}
