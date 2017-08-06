@@ -1,13 +1,11 @@
 import React, {Component} from 'react'
 
-const ButtonInput = function (props) {
+const ButtonInput = function ({active, events: {mouseover, mousedown}}) {
   return (
-    <span
-      onMouseOver={props.events.mouseover}
-      onMouseDown={props.events.mousedown}
-    >
-      {props.active ? 'x' : 'o'}
-    </span>
+    <div className={'pattern-button' + (active ? ' active' : '')}
+      onMouseOver={mouseover}
+      onMouseDown={mousedown}
+     />
   )
 }
 
@@ -17,10 +15,10 @@ class PatternInput extends Component {
     console.info(arguments)
     this.state = {
       value: [],
-      mousedown: false,
-      done: false
+      mousedown: false
     }
     this.valueToCoords = this.valueToCoords.bind(this)
+    this.mouseUpEventHandler = this.mouseUpEventHandler.bind(this)
   }
   addToPattern (value) {
     this.setState(function (prevState) {
@@ -58,23 +56,22 @@ class PatternInput extends Component {
       value: []
     })
   }
+  mouseUpEventHandler (e) {
+    let stateUpdates = {
+      mousedown: false
+    }
+    let pattern = this.state.value.slice(0)
+    stateUpdates.value = []
+    this.setState(stateUpdates)
+    if (pattern.length >= 1) {
+      this.props.events.change(pattern)
+    }
+  }
   componentDidMount () {
-    let _this = this
-    document.addEventListener('mouseup', function (e) {
-      let stateUpdates = {
-        mousedown: false
-      }
-      if (_this.state.value.length >= 4) {
-        stateUpdates.done = true
-        _this.props.events.change(_this.state.value)
-      } else {
-        stateUpdates.value = []
-      }
-      _this.setState(stateUpdates)
-    })
+    document.addEventListener('mouseup', this.mouseUpEventHandler)
   }
   componentWillUnmount () {
-    document.removeEventListener('mouseup')
+    document.removeEventListener('mouseup', this.mouseUpEventHandler)
   }
   render () {
     let columns = Number(this.props.columns) || 3
@@ -113,4 +110,4 @@ class PatternInput extends Component {
   }
 }
 
-export default PatternInput
+export {PatternInput}
