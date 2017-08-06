@@ -12,7 +12,6 @@ const ButtonInput = function ({active, events: {mouseover, mousedown}}) {
 class PatternInput extends Component {
   constructor (props, {store}) {
     super(props)
-    console.info(arguments)
     this.state = {
       value: [],
       mousedown: false

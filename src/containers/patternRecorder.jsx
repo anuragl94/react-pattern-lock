@@ -1,56 +1,38 @@
 import React, {Component} from 'react'
+import PropTypes from 'prop-types';
 import {PatternInput} from '../components/inputs.jsx'
+import { connect } from 'react-redux';
+import * as actions from '../actions/index';
 
 class PatternRecorder extends Component {
+  static propTypes = {
+    pattern: PropTypes.array,
+    dispatch: PropTypes.func,
+    confirmed: PropTypes.bool,
+    error: PropTypes.any
+  };
   constructor (props) {
     super(props)
-    this.state = {
-      pattern: [],
-      confirmed: false,
-      error: null
-    }
   }
   savePassword (pattern) {
     window.localStorage.setItem('pattern', JSON.stringify(pattern))
   }
   handlePattern (pattern) {
-    this.setState(function (prevState) {
-      let newState = Object.assign({}, prevState, {error: null})
-      if (pattern.length >= 4) {
-        if (!prevState.pattern.length) {
-          // Pattern entered for the first time
-          newState.pattern = pattern
-        } else if (!prevState.confirmed) {
-          // Confirming pattern
-          newState.confirmed = (prevState.pattern.length === pattern.length) &&
-          prevState.pattern.map((item, index) => {
-            return [item, pattern[index]]
-          }).reduce((acc, pair) => {
-            return acc && (pair[0] === pair[1])
-          })
-          if (!newState.confirmed) {
-            newState.error = 'Pattern does not match'
-          }
-        }
-      } else {
-        newState.error = 'Join at least 4 dots'
-      }
-      return newState
-    })
+    this.props.dispatch(actions.recordPattern(pattern));
   }
   render () {
-    if (!this.state.confirmed) {
+    if (!this.props.confirmed) {
       return (
         <div>
           <div>{
-            !this.state.pattern.length
+            !this.props.pattern.length
             ? 'Please enter a pattern to save as your password'
             : 'Enter the same pattern to confirm'
           }</div>
-          <PatternInput value={this.state.pattern} rows='3' columns='3' events={{
+          <PatternInput value={this.props.pattern} rows='3' columns='3' events={{
             change: this.handlePattern.bind(this)
           }} />
-          <div>{this.state.error}</div>
+          <div>{this.props.error}</div>
         </div>
       )
     } else {
@@ -63,4 +45,10 @@ class PatternRecorder extends Component {
   }
 }
 
-export default PatternRecorder
+export default connect((state) => {
+  return {
+      pattern: state.pattern,
+      confirmed: state.confirmed,
+      error: state.error
+  };
+})(PatternRecorder);
