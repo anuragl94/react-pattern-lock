@@ -1,13 +1,11 @@
 import React, {Component} from 'react'
 
-const ButtonInput = function (props) {
+const ButtonInput = function ({active, events: {mouseover, mousedown}}) {
   return (
-    <span
-      onMouseOver={props.events.mouseover}
-      onMouseDown={props.events.mousedown}
-    >
-      {props.active ? 'x' : 'o'}
-    </span>
+    <div className={'pattern-button' + (active ? ' active' : '')}
+      onMouseOver={mouseover}
+      onMouseDown={mousedown}
+     />
   )
 }
 
@@ -61,11 +59,12 @@ class PatternInput extends Component {
     let stateUpdates = {
       mousedown: false
     }
-    if (this.state.value.length >= 1) {
-      this.props.events.change(this.state.value)
-    }
+    let pattern = this.state.value.slice(0)
     stateUpdates.value = []
     this.setState(stateUpdates)
+    if (pattern.length >= 1) {
+      this.props.events.change(pattern)
+    }
   }
   componentDidMount () {
     document.addEventListener('mouseup', this.mouseUpEventHandler)
