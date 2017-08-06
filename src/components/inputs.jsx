@@ -35,7 +35,9 @@ class PatternInput extends Component {
           if (!xdir || !ydir || Math.abs(coords2.x - coords1.x) === Math.abs(coords2.y - coords1.y)) {
             for (let i = 1; i < iterations; i++) {
               let intermediateValue = (i * xdir + coords1.x) + (i * ydir + coords1.y) * this.props.rows
-              newState.value.push(intermediateValue)
+              if (newState.value.indexOf(intermediateValue) === -1) {
+                newState.value.push(intermediateValue)
+              }
             }
           }
         }
